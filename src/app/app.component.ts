@@ -58,13 +58,13 @@ export class AppComponent implements OnInit {
   }
 
   private receiveResults(books): void {
-    const items = books['results'].map(b => new BookSummary(b));
+    const newBooks = books['results'].map(b => new BookSummary(b));
 
-    if (items.length === 0) {
+    if (newBooks.length === 0) {
       this.reachedEnd = true;
     }
 
-    this.books = this.books.concat(items);
+    this.books = this.books.concat(newBooks);
     this.updating = false;
   }
 }
