@@ -1,8 +1,17 @@
-export class BookSummary {
-  readonly id;
-  readonly title;
-  readonly author;
-  readonly img_src;
+export interface BookSummary {
+  id: string;
+  title: string;
+  author: string;
+  img_src: string;
+  stars: Number;
+  ratings_count: Number;
+}
+
+export class ApiBookSummary implements BookSummary {
+  readonly id: string;
+  readonly title: string;
+  readonly author: string;
+  readonly img_src: string;
   readonly stars: Number;
   readonly ratings_count: Number;
 
