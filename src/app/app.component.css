@@ -21,7 +21,7 @@ time, mark, audio, video {
   border: 0;
   font-size: 100%;
   font: inherit;
-  font-family: 'Average', serif;
+  font-family: 'Brawler', serif;
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -49,10 +49,6 @@ table {
 }
 
 /* END CSS RESET */
-
-* {
-  font-family: 'Average', serif;
-}
 
 h1 {
   font-family: 'Open Sans';
