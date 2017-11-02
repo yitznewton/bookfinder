@@ -1,28 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs/Subscription';
+import { BookSummary } from './book-summary';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  books: BookSummary[] = [];
+export class AppComponent implements OnInit {
+  books: BookSummary[];
+
+  private q: string;
+  private latestPage: number;
+  private updating;
+  private reachedEnd;
 
   private subscription: Subscription = new Subscription();
-  private q: string;
-  private latestPage: number = 1;
-  private updating = false;
 
   constructor (private http: HttpClient) {}
 
-  updateQ(event): void {
-    this.q = event.target['value'];
-    this.latestPage = 1;
-    this.books = [];
+  ngOnInit(): void {
+    this.reset();
+  }
 
+  onScroll(): void {
+    if (this.updating)   { return; }
+    if (this.reachedEnd) { return; }
+
+    this.latestPage++;
     this.updateSubscription();
+  }
+
+  updateQ(event): void {
+    this.reset();
+    this.q = event.target['value'];
+    this.updateSubscription();
+  }
+
+  private reset() {
+    this.books = [];
+    this.latestPage = 1;
+    this.updating = false;
+    this.reachedEnd = false;
   }
 
   private updateSubscription() {
@@ -34,34 +54,17 @@ export class AppComponent {
         q: this.q,
         page: this.latestPage.toString()
       }
-    }).subscribe(books => {
-      this.books = this.books.concat(books['results'].map(b => new BookSummary(b)));
-      this.updating = false;
-    });
+    }).subscribe(books => this.receiveResults(books));
   }
 
-  onScroll(): void {
-    if (this.updating) { return; }
+  private receiveResults(books): void {
+    const items = books['results'].map(b => new BookSummary(b));
 
-    this.latestPage++;
-    this.updateSubscription();
-  }
-}
+    if (items.length === 0) {
+      this.reachedEnd = true;
+    }
 
-class BookSummary {
-  readonly id;
-  readonly title;
-  readonly author;
-  readonly img_src;
-  readonly stars: Number;
-  readonly ratings_count: Number;
-
-  constructor (raw_book) {
-    this.id = raw_book['best_book']['id'];
-    this.title = raw_book['best_book']['title'];
-    this.author = raw_book['best_book']['author']['name'];
-    this.img_src = raw_book['best_book']['image_url'];
-    this.stars = Number.parseFloat(raw_book['average_rating']);
-    this.ratings_count = Number.parseFloat(raw_book['ratings_count']);
+    this.books = this.books.concat(items);
+    this.updating = false;
   }
 }
