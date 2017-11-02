@@ -36,5 +36,5 @@ for a production build.
 
 ## Deployment to Heroku
 
-Create a deploy branch, build Angular, and `git add -f dist/` to make a build commit. Push this up with
+Create a deploy branch, do an Angular production build, and `git add -f dist/` to make a build commit. Push this up with
 `git push heroku deploy_branch_name:master`
