@@ -4,7 +4,7 @@
   <input (input)="updateQ($event)" name="q" class="book-search-input" />
 </form>
 
-<ul class="book-list">
+<ul class="book-list" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1.0">
   <li *ngFor="let book of books">
     <img src="{{book.img_src}}" alt="Image of book"/>
     <div class="book-info">

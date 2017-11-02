@@ -11,15 +11,40 @@ export class AppComponent {
   books: BookSummary[] = [];
 
   private subscription: Subscription = new Subscription();
+  private q: string;
+  private latestPage: number = 1;
+  private updating = false;
 
   constructor (private http: HttpClient) {}
 
   updateQ(event): void {
+    this.q = event.target['value'];
+    this.latestPage = 1;
+    this.books = [];
+
+    this.updateSubscription();
+  }
+
+  private updateSubscription() {
+    this.updating = true;
     this.subscription.unsubscribe();
 
-    this.subscription = this.http.get('/books', {params: {q: event.target['value']}}).subscribe(books => {
-      this.books = books['results'].map(b => new BookSummary(b));
+    this.subscription = this.http.get('/books', {
+      params: {
+        q: this.q,
+        page: this.latestPage.toString()
+      }
+    }).subscribe(books => {
+      this.books = this.books.concat(books['results'].map(b => new BookSummary(b)));
+      this.updating = false;
     });
+  }
+
+  onScroll(): void {
+    if (this.updating) { return; }
+
+    this.latestPage++;
+    this.updateSubscription();
   }
 }
 
