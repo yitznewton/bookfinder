@@ -1,4 +1,4 @@
-import { BookSummary } from './book-summary';
+import { BookSummary, ApiBookSummary } from './book-summary';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
@@ -22,6 +22,6 @@ export class ApiBookSearchService extends BookSearchService {
   }
 
   private wrap(response) {
-    return response.results.map(b => new BookSummary(b));
+    return response.results.map(b => new ApiBookSummary(b));
   }
 }
