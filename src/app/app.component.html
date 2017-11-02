@@ -1,12 +1,16 @@
-<h1>Book list</h1>
+<h1>Bookfinder book search</h1>
 
 <form>
-  <input (input)="updateQ($event)" name="q" />
+  <input (input)="updateQ($event)" name="q" class="book-search-input" />
 </form>
 
-<ul>
+<ul class="book-list">
   <li *ngFor="let book of books">
-    <h2>{{book.title}}</h2>
     <img src="{{book.img_src}}" alt="Image of book"/>
+    <div class="book-info">
+      <h2>{{book.title}}</h2>
+      <div class="author">By {{book.author}}</div>
+      <div class="rating">{{book.stars}} stars ({{book.ratings_count.toLocaleString()}})</div>
+    </div>
   </li>
 </ul>
