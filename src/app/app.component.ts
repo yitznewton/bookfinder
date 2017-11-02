@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +10,14 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   books: BookSummary[] = [];
 
+  private subscription: Subscription = new Subscription();
+
   constructor (private http: HttpClient) {}
 
   updateQ(event): void {
-    this.http.get('http://localhost:4567/books', {params: {q: event.target['value']}}).subscribe(books => {
+    this.subscription.unsubscribe();
+
+    this.subscription = this.http.get('http://localhost:4567/books', {params: {q: event.target['value']}}).subscribe(books => {
       this.books = books['results'].map(b => new BookSummary(b));
     });
   }
