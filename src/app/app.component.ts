@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs/Subscription';
 import { BookSummary } from './book-summary';
+import { ApiBookSearchService, BookSearchService } from './book-search-service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  providers: [
+    {
+      provide: BookSearchService,
+      useClass: ApiBookSearchService
+    }
+  ]
 })
 export class AppComponent implements OnInit {
   books: BookSummary[];
@@ -18,7 +24,7 @@ export class AppComponent implements OnInit {
 
   private subscription: Subscription = new Subscription();
 
-  constructor (private http: HttpClient) {}
+  constructor (private bookSearchService: BookSearchService) {}
 
   ngOnInit(): void {
     this.reset();
@@ -49,17 +55,10 @@ export class AppComponent implements OnInit {
     this.updating = true;
     this.subscription.unsubscribe();
 
-    this.subscription = this.http.get('/books', {
-      params: {
-        q: this.q,
-        page: this.latestPage.toString()
-      }
-    }).subscribe(books => this.receiveResults(books));
+    this.subscription = this.bookSearchService.get(this.q, this.latestPage).subscribe(books => this.receiveResults(books));
   }
 
-  private receiveResults(books): void {
-    const newBooks = books['results'].map(b => new BookSummary(b));
-
+  private receiveResults(newBooks: BookSummary[]): void {
     if (newBooks.length === 0) {
       this.reachedEnd = true;
     }
