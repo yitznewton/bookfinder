@@ -1,0 +1,64 @@
+require 'sinatra'
+require 'goodreads'
+require 'pry'
+
+def goodreads
+  Goodreads::Client.new(api_key: ENV['GOODREADS_KEY'], api_secret: ENV['GOODREADS_SECRET'])
+end
+
+class SearchQuery
+  def initialize(request_params)
+    @request_params = request_params
+  end
+
+  def search_params
+    [q, options]
+  end
+
+  def empty?
+    q.empty?
+  end
+
+  private
+
+  attr_reader :request_params
+
+  def q
+    request_params['q'] || ''
+  end
+
+  def options
+    {
+      page: request_params['page'] || 1
+    }
+  end
+end
+
+get '/books' do
+  begin
+    content_type :json
+
+    query = SearchQuery.new(params)
+
+    return [].to_json if query.empty?
+
+    search = goodreads.search_books(*query.search_params)
+
+    results = if search['total_results'].to_i == 0
+      []
+    else
+      search.results.work
+    end
+
+    {results: results}.to_json
+  end
+end
+
+get '/books/:id' do
+  begin
+    content_type :json
+    goodreads.book(params['id']).to_json
+  rescue Goodreads::NotFound
+    [404, {}.to_json]
+  end
+end
