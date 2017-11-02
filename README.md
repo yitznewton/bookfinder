@@ -1,27 +1,34 @@
-# BookfinderBrowser
+# Bookfinder book search app
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.0.
+## Development setup
 
-## Development server
+```shell
+# Sinatra API
+$ bundle install
+
+# Angular
+$ npm install
+$ npm install -g @angular/cli
+```
+
+## Development server (Sinatra)
+
+```shell
+export GOODREADS_KEY=yourkey
+export GOODREADS_SECRET=yoursecret
+```
+
+Run `bundle exec rackup config.ru -p 4567` to serve the Sinatra API locally. This setup will work when the Angular app
+has been built for distribution, i.e. using `ng build`.
+
+To use the Sinatra API with the live Angular development server i.e. `ng serve`, you must enable CORS, and specify the
+appropriate API port within the Angular app.
+
+## Development server (Angular)
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
