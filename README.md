@@ -33,5 +33,4 @@ appropriate API port within the Angular app.
 
 Set the Goodreads API environment variables in Heroku.
 
-Create a deploy branch, do an Angular production build, and `git add -f dist/` to make a build commit. Push this up with
-`git push heroku deploy_branch_name:master`
+Run the deploy script: `./deploy.sh branch_to_deploy`. The script defaults to deploying the local branch named `master`.
