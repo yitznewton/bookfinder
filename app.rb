@@ -13,7 +13,7 @@ def results(query)
   if search['total_results'].to_i == 0
     []
   else
-    search.results.work
+    [search.results.work].flatten
   end
 end
 
