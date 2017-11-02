@@ -17,7 +17,7 @@ export class AppComponent {
   updateQ(event): void {
     this.subscription.unsubscribe();
 
-    this.subscription = this.http.get('http://localhost:4567/books', {params: {q: event.target['value']}}).subscribe(books => {
+    this.subscription = this.http.get('/books', {params: {q: event.target['value']}}).subscribe(books => {
       this.books = books['results'].map(b => new BookSummary(b));
     });
   }
