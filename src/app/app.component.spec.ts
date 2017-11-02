@@ -80,4 +80,13 @@ describe('AppComponent', () => {
       expect(bookSearchService.get).toHaveBeenCalledTimes(3);
     });
   });
+
+  describe('requesting a new search before original search is received', () => {
+    it('unsubscribes from the original search', () => {
+      component().updateQ({target: {value: 'xyz'}});
+      component().updateQ({target: {value: 'abc'}});
+
+      expect(bookSearchService.subject.observers.length).toBe(1);
+    });
+  });
 });
