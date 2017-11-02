@@ -6,6 +6,18 @@ def goodreads
   Goodreads::Client.new(api_key: ENV['GOODREADS_KEY'], api_secret: ENV['GOODREADS_SECRET'])
 end
 
+def results(query)
+  return [] if query.empty?
+
+  search = goodreads.search_books(*query.search_params)
+
+  if search['total_results'].to_i == 0
+    []
+  else
+    search.results.work
+  end
+end
+
 class SearchQuery
   def initialize(request_params)
     @request_params = request_params
@@ -34,23 +46,18 @@ class SearchQuery
   end
 end
 
+set :public_folder, File.dirname(__FILE__) + '/dist'
+
+get '/' do
+  send_file File.join(settings.public_folder, 'index.html')
+end
+
 get '/books' do
   begin
     content_type :json
 
     query = SearchQuery.new(params)
-
-    return [].to_json if query.empty?
-
-    search = goodreads.search_books(*query.search_params)
-
-    results = if search['total_results'].to_i == 0
-      []
-    else
-      search.results.work
-    end
-
-    {results: results}.to_json
+    {results: results(query)}.to_json
   end
 end
 
